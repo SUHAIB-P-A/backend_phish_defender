@@ -33,3 +33,7 @@ rf_classifier = RandomForestClassifier(random_state=42)
 
 # 7th
 rf_classifier.fit(X_train,Y_train)
+
+# 8th
+y_predict = rf_classifier.predict(X_test)
+#print(len(y_predict))
