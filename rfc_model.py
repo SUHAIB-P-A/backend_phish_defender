@@ -30,3 +30,6 @@ X_train, X_test, Y_train, Y_test = train_test_split(
 # 6th
 rf_classifier = RandomForestClassifier(random_state=42)
 #print(rf_classifier)
+
+# 7th
+rf_classifier.fit(X_train,Y_train)
