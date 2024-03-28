@@ -22,18 +22,22 @@ Y = data['Result']
 X_train, X_test, Y_train, Y_test = train_test_split(
     X, Y, test_size=0.2, random_state=42)
 
-#print(X_train)
-#print(X_test)
-#print(Y_train)
-#print(Y_test)
+# print(X_train)
+# print(X_test)
+# print(Y_train)
+# print(Y_test)
 
 # 6th
 rf_classifier = RandomForestClassifier(random_state=42)
-#print(rf_classifier)
+# print(rf_classifier)
 
 # 7th
-rf_classifier.fit(X_train,Y_train)
+rf_classifier.fit(X_train, Y_train)
 
 # 8th
 y_predict = rf_classifier.predict(X_test)
-#print(len(y_predict))
+# print(len(y_predict))
+
+accuracy = accuracy_score(Y_test, y_predict)
+print("accuracy = ", accuracy*100)
+# accuracy = 98.43962008141112
