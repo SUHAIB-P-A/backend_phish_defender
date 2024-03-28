@@ -26,3 +26,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(
 #print(X_test)
 #print(Y_train)
 #print(Y_test)
+
+# 6th
+rf_classifier = RandomForestClassifier(random_state=42)
+#print(rf_classifier)
