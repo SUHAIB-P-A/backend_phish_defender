@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+# 9th
+import joblib
 
 # 2ed
 data = pd.read_csv('Dataset Phising Website.csv')
@@ -41,3 +43,6 @@ y_predict = rf_classifier.predict(X_test)
 accuracy = accuracy_score(Y_test, y_predict)
 print("accuracy = ", accuracy*100)
 # accuracy = 98.43962008141112
+
+# 9th
+joblib.dump(rf_classifier,'random_forest_model.pkl')
