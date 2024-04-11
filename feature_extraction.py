@@ -247,3 +247,6 @@ def generate_dataset(url):
     # [print (key,':',value) for key,value in data.items()]
     print("\n")
     return l
+
+url = input("enter url")
+generate_dataset(url)
