@@ -5,123 +5,123 @@ import re
 import time
 
 def having_ip_address(domain):
-    print("")
+    print("hello")
 
 
 def url_length(url):
-    print("")
+    print("hello")
 
 
 def shortening_service(url):
-    print("")
+    print("hello")
 
 
 def at_in_url(url):
-    print("")
+    print("hello")
 
 
 def double_slash_redirecting(url):
-    print("")
+    print("hello")
 
 
 def prefix_suffix(domain):
-    print("")
+    print("hello")
 
 
 def having_sub_domain(domain):
-    print("")
+    print("hello")
 
 
 def ssl_final_state(url):
-    print("")
+    print("hello")
 
 
 def domain_registration_length(whois_response):
-    print("")
+    print("hello")
 
 
 def favicon(url):
-    print("")
+    print("hello")
 
 
 def port(domain):
-    print("")
+    print("hello")
 
 
 def https_token(domain):
-    print("")
+    print("hello")
 
 
 def request_url(url, domain, soup):
-    print("")
+    print("hello")
 
 
 def url_of_anchor(url, domain, soup):
-    print("")
+    print("hello")
 
 
 def links_in_tags(url, domain, soup):
-    print("")
+    print("hello")
 
 
 def sfh(url):
-    print("")
+    print("hello")
 
 
 def check_submit_to_email(response):
-    print("")
+    print("hello")
 
 
 def abnormal_url(url):
-    print("")
+    print("hello")
 
 
 def web_forwarding(response):
-    print("")
+    print("hello")
 
 
 def on_mouseover(response):
-    print("")
+    print("hello")
 
 
 def right_click(response):
-    print("")
+    print("hello")
 
 
 def popup_window(response):
-    print("")
+    print("hello")
 
 
 def iframe(response):
-    print("")
+    print("hello")
 
 
 def age_of_domain(whois_response):
-    print("")
+    print("hello")
 
 
 def check_dns_record(url):
-    print("")
+    print("hello")
 
 
 def website_traffic(url):
-    print("")
+    print("hello")
 
 
 def page_rank(domain):
-    print("")
+    print("hello")
 
 
 def google_index(url):
-    print("")
+    print("hello")
 
 
 def links_pointing_to_page(response):
-    print("")
+    print("hello")
 
 
 def statistical_report(domain):
-    print("")
+    print("hello")
 
 
 # Dataset generation function
@@ -244,7 +244,7 @@ def generate_dataset(url):
     print("The generated dataset is : ")
     print(dataset)
     print("\n")
-    # [print (key,':',value) for key,value in data.items()]
+    #[print (key,':',value) for key,value in data.items()]
     print("\n")
     return l
 
