@@ -3,9 +3,29 @@ from bs4 import BeautifulSoup
 import whois
 import re
 import time
+import string
 
+# checking ip adress found or not in the url
 def having_ip_address(domain):
-    print("hello")
+    
+    if domain == "" or domain == None:
+        return -1
+    
+    else:
+        split_url = domain.replace(".","")
+        counter_hex = 0
+
+        for i in split_url:
+            for i in string.hexdigits:
+                counter_hex +=1
+
+        total_len= len(split_url)
+        having_ip_address = 1
+
+        if counter_hex>=total_len:
+            having_ip_address - 1
+
+        return having_ip_address    
 
 
 def url_length(url):
