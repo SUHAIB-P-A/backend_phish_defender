@@ -228,3 +228,22 @@ def generate_dataset(url):
     data['google_index'] = dataset[27]
     data['links_pointing_to_page'] = dataset[28]
     data['statistical_report'] = dataset[29]
+
+
+    count = 0
+    l = []
+    l.append(dataset)
+    l.append(end-start)
+
+    for i in dataset:
+        count += 1
+
+    print("Enter URL : ", url)
+    print("\nNumber of features extracted = ", count)
+    print("Time taken to generate dataset =%.2f" % l[1], " seconds")       
+    print("The generated dataset is : ")
+    print(dataset)
+    print("\n")
+    # [print (key,':',value) for key,value in data.items()]
+    print("\n")
+    return l
