@@ -123,7 +123,7 @@ def links_pointing_to_page(response):
 def statistical_report(domain):
     print("")
 
-    
+
 # Dataset generation function
 def generate_dataset(url):
 
@@ -195,3 +195,36 @@ def generate_dataset(url):
 
 # calculate the ending time of dataset creation
     end = time.time()
+
+
+    data = {}
+    data['having_ip_address'] = dataset[0]
+    data['url_length'] = dataset[1]
+    data['shortening_service'] = dataset[2]
+    data['at_in_url'] = dataset[3]
+    data['double_slash_redirecting'] = dataset[4]
+    data['prefix_suffix'] = dataset[5]
+    data['having_sub_domain'] = dataset[6]
+    data['ssl_final_state'] = dataset[7]
+    data['domain_registration_length'] = dataset[8]
+    data['favicon'] = dataset[9]
+    data['port'] = dataset[10]
+    data['https_token'] = dataset[11]
+    data['request_url'] = dataset[12]
+    data['url_of_anchor'] = dataset[13]
+    data['links_in_tags'] = dataset[14]
+    data['sfh'] = dataset[15]
+    data['check_submit_to_email'] = dataset[16]
+    data['abnormal_url'] = dataset[17]
+    data['web_forwarding'] = dataset[18]
+    data['on_mouseover'] = dataset[19]
+    data['right_click'] = dataset[20]
+    data['popup_window'] = dataset[21]
+    data['iframe'] = dataset[22]
+    data['age_of_domain'] = dataset[23]
+    data['check_dns_record'] = dataset[24]
+    data['website_traffic'] = dataset[25]
+    data['page_rank'] = dataset[26]
+    data['google_index'] = dataset[27]
+    data['links_pointing_to_page'] = dataset[28]
+    data['statistical_report'] = dataset[29]
