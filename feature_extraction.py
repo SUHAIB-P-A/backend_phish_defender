@@ -29,7 +29,12 @@ def having_ip_address(domain):
 
 
 def url_length(url):
-    print("hello")
+    if len(url) < 54:
+        return 1
+    elif len(url) >= 54 and len(url) <= 80:
+        return -1
+    else:
+        return 0
 
 
 def shortening_service(url):
@@ -153,7 +158,7 @@ def generate_dataset(url):
 
 # convert the url in to standard format
     if not re.match(r"https?", url):
-        url = "http://" + url
+        url = "https://" + url
 
 # get and store the response of the inputed url
     try:
