@@ -6,26 +6,28 @@ import time
 import string
 
 # checking ip adress found or not in the url
+
+
 def having_ip_address(domain):
-    
+
     if domain == "" or domain == None:
         return -1
-    
+
     else:
-        split_url = domain.replace(".","")
+        split_url = domain.replace(".", "")
         counter_hex = 0
 
         for i in split_url:
             for i in string.hexdigits:
-                counter_hex +=1
+                counter_hex += 1
 
-        total_len= len(split_url)
+        total_len = len(split_url)
         having_ip_address = 1
 
-        if counter_hex>=total_len:
+        if counter_hex >= total_len:
             having_ip_address - 1
 
-        return having_ip_address    
+        return having_ip_address
 
 
 def url_length(url):
@@ -37,8 +39,25 @@ def url_length(url):
         return 0
 
 
-def shortening_service(url):
-    print("hello")
+def shortening_service(domain):
+    if domain == "" or domain == None:
+        return -1
+
+    else:
+
+        famous_short_urls = ["bit.ly", "tinyurl.com", "goo.gl", "rebrand.ly", "t.co", "youtu.be", "ow.ly", "w.wiki", "is.gd",
+                             "shorte.st", "go2l.ink", "x.co", "tr.im", "cli.gs", "yfrog.com", "migre.me", "ff.im", "tiny.cc", "url4.eu",
+                             "twit.ac", "su.pr", "twurl.nl", "snipurl.com", "short.to", "BudURL.com", "ping.fm", "post.ly", "Just.as",
+                             "bkite.com", "snipr.com", "fic.kr", "loopt.us", "doiop.com", "short.ie", "kl.am", "wp.me",
+                             "rubyurl.com", "om.ly", "to.ly", "bit.do", "t.co", "lnkd.in", "db.tt", "qr.ae", "adf.ly", "bitly.com",
+                             "cur.lv", "ity.im", "q.gs", "po.st", "bc.vc", "twitthis.com", "u.to", "j.mp", "buzurl.com", "cutt.us",
+                             "u.bb", "yourls.org", "prettylinkpro.com", "scrnch.me", "filoops.info", "vzturl.com", "qr.net", "1url.com",
+                             "tweez.me", "v.gd", "tr.im", "link.zip.net", "replug.io", "rebrandly.com", "bl.ink", 'cutt.ly']
+
+        status = 1
+        if domain in famous_short_urls:
+            status = -1
+        return status
 
 
 def at_in_url(url):
@@ -199,9 +218,9 @@ def generate_dataset(url):
     dataset[9] = favicon(url)
     dataset[10] = port(domain)
     dataset[11] = https_token(domain)
-    dataset[12] = request_url(url,domain,soup)
-    dataset[13] = url_of_anchor(url,domain,soup)
-    dataset[14] = links_in_tags(url,domain,soup)
+    dataset[12] = request_url(url, domain, soup)
+    dataset[13] = url_of_anchor(url, domain, soup)
+    dataset[14] = links_in_tags(url, domain, soup)
     dataset[15] = sfh(url)
     dataset[16] = check_submit_to_email(response)
     dataset[17] = abnormal_url(url)
@@ -220,7 +239,6 @@ def generate_dataset(url):
 
 # calculate the ending time of dataset creation
     end = time.time()
-
 
     data = {}
     data['having_ip_address'] = dataset[0]
@@ -254,7 +272,6 @@ def generate_dataset(url):
     data['links_pointing_to_page'] = dataset[28]
     data['statistical_report'] = dataset[29]
 
-
     count = 0
     l = []
     l.append(dataset)
@@ -265,13 +282,14 @@ def generate_dataset(url):
 
     print("Enter URL : ", url)
     print("\nNumber of features extracted = ", count)
-    print("Time taken to generate dataset =%.2f" % l[1], " seconds")       
+    print("Time taken to generate dataset =%.2f" % l[1], " seconds")
     print("The generated dataset is : ")
     print(dataset)
     print("\n")
-    #[print (key,':',value) for key,value in data.items()]
+    # [print (key,':',value) for key,value in data.items()]
     print("\n")
     return l
+
 
 url = input("enter url")
 generate_dataset(url)
