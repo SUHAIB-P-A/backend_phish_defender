@@ -57,7 +57,13 @@ def shortening_service(domain):
 
 
 def at_in_url(url):
-    print("hello")
+    label= 1
+    find_at_symbol = url.find('@')
+    #print(find_at_symbol)
+    if find_at_symbol != -1:
+        label = -1
+
+    return label    
 
 
 def double_slash_redirecting(url):
@@ -287,5 +293,5 @@ def generate_dataset(url):
     return l
 
 
-url = input("enter url")
+url = input("enter url : ")
 generate_dataset(url)
