@@ -67,7 +67,15 @@ def at_in_url(url):
 
 
 def double_slash_redirecting(url):
-    print("hello")
+    list = [x.start(0) for x in re.finditer('//',url)]
+    #print(list)
+    l= len(list)-1
+    #print(list[l])
+    if list[l]>6:
+        if list[l]>7:
+            return -1
+        
+    return 1    
 
 
 def prefix_suffix(domain):
