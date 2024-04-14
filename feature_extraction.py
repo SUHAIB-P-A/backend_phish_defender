@@ -57,29 +57,49 @@ def shortening_service(domain):
 
 
 def at_in_url(url):
-    label= 1
+    label = 1
     find_at_symbol = url.find('@')
-    #print(find_at_symbol)
+    # print(find_at_symbol)
     if find_at_symbol != -1:
         label = -1
 
-    return label    
+    return label
 
 
 def double_slash_redirecting(url):
-    list = [x.start(0) for x in re.finditer('//',url)]
-    #print(list)
-    l= len(list)-1
-    #print(list[l])
-    if list[l]>6:
-        if list[l]>7:
+    list = [x.start(0) for x in re.finditer('//', url)]
+    # print(list)
+    l = len(list)-1
+    # print(list[l])
+    if list[l] > 6:
+        if list[l] > 7:
             return -1
-        
-    return 1    
+
+    return 1
 
 
 def prefix_suffix(domain):
-    print("hello")
+    counter = 0
+
+    if domain == "" or domain == None:
+        return -1
+
+    else:
+        y = 1
+        # prefix
+        index = domain.find("-")
+        # print(index)
+        if index != -1:
+            y = -1
+        # suffix
+        else:
+            for x in domain:
+                if x == '.':
+                    counter += 1
+            # print(counter)
+            if counter >= 2:
+                y = -1
+    return y
 
 
 def having_sub_domain(domain):
@@ -286,7 +306,7 @@ def generate_dataset(url):
     l = []
     l.append(dataset)
     l.append(end-start)
-    #print(l)
+    # print(l)
 
     for i in dataset:
         count += 1
