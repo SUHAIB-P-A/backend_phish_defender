@@ -112,7 +112,7 @@ def having_sub_domain(domain):
         print(index)
         if index != -1:
             split_url = domain[:index]
-            print(split_url)
+            # print(split_url)
         counter = 0
         for i in split_url:
             if i == ".":
@@ -125,6 +125,7 @@ def having_sub_domain(domain):
             label = -1
 
         return label
+
 
 def ssl_final_state(url):
     print("hello")
