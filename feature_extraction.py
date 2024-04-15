@@ -103,8 +103,28 @@ def prefix_suffix(domain):
 
 
 def having_sub_domain(domain):
-    print("hello")
+    if domain == "" or domain == None:
+        return -1
 
+    else:
+
+        index = domain.rfind(".")
+        print(index)
+        if index != -1:
+            split_url = domain[:index]
+            print(split_url)
+        counter = 0
+        for i in split_url:
+            if i == ".":
+                counter += 1
+
+        label = 1
+        if counter == 2:
+            label = 0
+        elif counter >= 3:
+            label = -1
+
+        return label
 
 def ssl_final_state(url):
     print("hello")
