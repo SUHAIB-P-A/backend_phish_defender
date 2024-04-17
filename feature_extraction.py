@@ -5,8 +5,12 @@ import re
 import time
 import string
 import datetime
+import tldextract
+import favicon
+from favicon import get
 from datetime import datetime
 from datetime import date
+from tldextract import extract
 from const import constant
 
 # instance for constant class
@@ -141,12 +145,12 @@ def domain_registration_length(whois_response):
         list_check = isinstance(expiration_date, list)
         if (list_check == True):
             expiration_date = min(expiration_date)
-        #print("Expiration date = ", expiration_date)
+        # print("Expiration date = ", expiration_date)
         today = time.strftime('%Y-%m-%d')
         today = datetime.strptime(today, '%Y-%m-%d')
         registration_length = abs((expiration_date - today).days)
-        #print(registration_length/365)
-        #print(registration_length)
+        # print(registration_length/365)
+        # print(registration_length)
 
         if registration_length / 365 <= 1:
             return -1
@@ -158,9 +162,28 @@ def domain_registration_length(whois_response):
         return -1
 
 
+def favicon(url, soup, response):
+    try:
+        # Fetch the webpage content
+        response = requests.get(url)
+        # print(response)
+        response.raise_for_status()  # Raise an exception for 4xx and 5xx status codes
 
-def favicon(url):
-    print("hello")
+        # Parse the HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
+        # print(soup)
+
+        favicon_tag = soup.find('link', "rel='icon'") or soup.find(
+            'link', "rel='shortcut icon'")
+        # print(favicon_tag)
+
+        if favicon_tag:
+            return 1  # Favicon found
+        else:
+            return -1  # Favicon not found
+    except Exception as e:
+        print("Error:", e)
+        return -1
 
 
 def port(domain):
@@ -267,7 +290,7 @@ def generate_dataset(url):
 # get all the domain information about the url
     try:
         whois_respo = whois.whois(url)
-        print(whois_respo)
+        # print(whois_respo)
         domain = whois_respo.domain_name
         # print(domain)
         list_ckeck = isinstance(domain, list)
@@ -290,7 +313,7 @@ def generate_dataset(url):
     dataset[6] = having_sub_domain(domain)
     dataset[7] = ssl_final_state(url)
     dataset[8] = domain_registration_length(whois_respo)
-    dataset[9] = favicon(url)
+    dataset[9] = favicon(url, soup, response)
     dataset[10] = port(domain)
     dataset[11] = https_token(domain)
     dataset[12] = request_url(url, domain, soup)
