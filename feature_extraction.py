@@ -4,6 +4,9 @@ import whois
 import re
 import time
 import string
+import datetime
+from datetime import datetime
+from datetime import date
 from const import constant
 
 # instance for constant class
@@ -34,9 +37,9 @@ def having_ip_address(domain):
 
 
 def url_length(url):
-    if len(url) < 54:
+    if len(url) < 100:
         return 1
-    elif len(url) >= 54 and len(url) <= 80:
+    elif len(url) >= 54 and len(url) <= 400:
         return -1
     else:
         return 0
@@ -132,7 +135,28 @@ def ssl_final_state(url):
 
 
 def domain_registration_length(whois_response):
-    print("hello")
+    try:
+        expiration_date = whois_response.expiration_date
+        registration_length = 0
+        list_check = isinstance(expiration_date, list)
+        if (list_check == True):
+            expiration_date = min(expiration_date)
+        #print("Expiration date = ", expiration_date)
+        today = time.strftime('%Y-%m-%d')
+        today = datetime.strptime(today, '%Y-%m-%d')
+        registration_length = abs((expiration_date - today).days)
+        #print(registration_length/365)
+        #print(registration_length)
+
+        if registration_length / 365 <= 1:
+            return -1
+
+        else:
+            return 1
+
+    except:
+        return -1
+
 
 
 def favicon(url):
@@ -243,7 +267,7 @@ def generate_dataset(url):
 # get all the domain information about the url
     try:
         whois_respo = whois.whois(url)
-        # print(whois_respo)
+        print(whois_respo)
         domain = whois_respo.domain_name
         # print(domain)
         list_ckeck = isinstance(domain, list)
