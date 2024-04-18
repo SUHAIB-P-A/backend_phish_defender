@@ -219,7 +219,73 @@ def https_token(domain):
 
 
 def request_url(url, domain, soup):
-    print("hello")
+    i = 0
+    success = 0
+
+    try:
+
+        if soup == -999:
+            # print("Request URL : Soup -999")
+            #print("hellokool")
+            return -1
+            # data['Request_URL']=-1
+
+        else:
+            # print("hai")
+            for img in soup.find_all('img', src=True):
+                dots = [x.start(0) for x in re.finditer('\.', img['src'])]
+                # print(dots)
+                if url in img['src'] or domain in img['src'] or len(dots) == 1:
+                    success = success + 1
+                    #print("1:"+str(success))
+                i = i+1
+
+            for audio in soup.find_all('audio', src=True):
+                dots = [x.start(0) for x in re.finditer('\.', audio['src'])]
+                #print(dots)
+                if url in audio['src'] or domain in audio['src'] or len(dots) == 1:
+                    success = success + 1
+                    #print("2:"+str(success))
+                i = i+1
+
+            for embed in soup.find_all('embed', src=True):
+                dots = [x.start(0) for x in re.finditer('\.', embed['src'])]
+                if url in embed['src'] or domain in embed['src'] or len(dots) == 1:
+                    success = success + 1
+                    #print("3:"+str(success))
+                i = i+1
+
+            for iframe in soup.find_all('iframe', src=True):
+                dots = [x.start(0) for x in re.finditer('\.', iframe['src'])]
+                if url in iframe['src'] or domain in iframe['src'] or len(dots) == 1:
+                    success = success + 1
+                    #print("4:"+str(success))
+                i = i+1
+            #print(success)
+            # print(dots)
+            #print(i)
+            try:
+                percentage = success/float(i) * 100
+                print("Request URL percentage = ", percentage)
+
+                if percentage < 22.0:
+                    return 1
+                    
+                elif ((percentage >= 22.0) and (percentage < 61.0)):
+                    return 0
+                    
+                else:
+                    #print("hello887")
+                    return -1
+
+                    
+            except:
+                return 1
+                
+
+    except Exception as e:
+        #print("hellosee", e)
+        return -1
 
 
 def url_of_anchor(url, domain, soup):
