@@ -187,11 +187,35 @@ def favicon(url, soup, response):
 
 
 def port(domain):
-    print("hello")
+    # print(domain)
+
+    if domain == "" or domain == None:
+        return -1
+
+    else:
+
+        try:
+            port = domain.split(":")[1]
+            # print(port)
+            if port:
+                return -1
+            else:
+                return 1
+        except:
+            return 1
 
 
 def https_token(domain):
-    print("hello")
+    if domain == "" or domain == None:
+        return -1
+    else:
+        index = domain.find('//https')
+        if index != -1:
+            return -1
+            
+        else:
+            return 1
+            
 
 
 def request_url(url, domain, soup):
@@ -290,9 +314,9 @@ def generate_dataset(url):
 # get all the domain information about the url
     try:
         whois_respo = whois.whois(url)
-        # print(whois_respo)
+        print(whois_respo)
         domain = whois_respo.domain_name
-        # print(domain)
+        print(domain)
         list_ckeck = isinstance(domain, list)
         if (list_ckeck == True):
             domain = domain[1].lower()
