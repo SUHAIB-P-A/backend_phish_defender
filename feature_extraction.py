@@ -212,10 +212,9 @@ def https_token(domain):
         index = domain.find('//https')
         if index != -1:
             return -1
-            
+
         else:
             return 1
-            
 
 
 def request_url(url, domain, soup):
@@ -226,7 +225,7 @@ def request_url(url, domain, soup):
 
         if soup == -999:
             # print("Request URL : Soup -999")
-            #print("hellokool")
+            # print("hellokool")
             return -1
             # data['Request_URL']=-1
 
@@ -237,59 +236,94 @@ def request_url(url, domain, soup):
                 # print(dots)
                 if url in img['src'] or domain in img['src'] or len(dots) == 1:
                     success = success + 1
-                    #print("1:"+str(success))
+                    # print("1:"+str(success))
                 i = i+1
 
             for audio in soup.find_all('audio', src=True):
                 dots = [x.start(0) for x in re.finditer('\.', audio['src'])]
-                #print(dots)
+                # print(dots)
                 if url in audio['src'] or domain in audio['src'] or len(dots) == 1:
                     success = success + 1
-                    #print("2:"+str(success))
+                    # print("2:"+str(success))
                 i = i+1
 
             for embed in soup.find_all('embed', src=True):
                 dots = [x.start(0) for x in re.finditer('\.', embed['src'])]
                 if url in embed['src'] or domain in embed['src'] or len(dots) == 1:
                     success = success + 1
-                    #print("3:"+str(success))
+                    # print("3:"+str(success))
                 i = i+1
 
             for iframe in soup.find_all('iframe', src=True):
                 dots = [x.start(0) for x in re.finditer('\.', iframe['src'])]
                 if url in iframe['src'] or domain in iframe['src'] or len(dots) == 1:
                     success = success + 1
-                    #print("4:"+str(success))
+                    # print("4:"+str(success))
                 i = i+1
-            #print(success)
+            # print(success)
             # print(dots)
-            #print(i)
+            # print(i)
             try:
                 percentage = success/float(i) * 100
                 print("Request URL percentage = ", percentage)
 
                 if percentage < 22.0:
                     return 1
-                    
+
                 elif ((percentage >= 22.0) and (percentage < 61.0)):
                     return 0
-                    
+
                 else:
-                    #print("hello887")
+                    # print("hello887")
                     return -1
 
-                    
             except:
                 return 1
-                
 
     except Exception as e:
-        #print("hellosee", e)
+        # print("hellosee", e)
         return -1
 
 
 def url_of_anchor(url, domain, soup):
-    print("hello")
+    percentage = 0
+    i = 0
+    unsafe = 0
+
+    try:
+
+        if soup == -999:
+            return -1
+            # data['URL_of_Anchor']=-1
+
+        else:
+            for a in soup.find_all('a', href=True):
+                # 2nd condition was 'JavaScript ::void(0)' but we put JavaScript because the space between javascript and :: might not be
+                # there in the actual a['href']
+                if "#" in a['href'] or "javascript" in a['href'].lower() or "mailto" in a['href'].lower() or not (url in a['href'] or domain in a['href']):
+                    unsafe = unsafe + 1
+                    print(unsafe)
+                i = i + 1
+                print(i)
+
+            try:
+                percentage = unsafe / float(i) * 100
+                print("URL of Anchor percentage = ", percentage)
+
+                if percentage < 31.0:
+                    return 1
+                    # data['URL_of_Anchor']=1
+                elif ((percentage >= 31.0) and (percentage <= 67.0)):
+                    return 0
+                    # data['URL_of_Anchor']=0
+                else:
+                    return -1
+                    # data['URL_of_Anchor']=-1
+            except:
+                return 1
+                # data['URL_of_Anchor']=1
+    except:
+        return -1
 
 
 def links_in_tags(url, domain, soup):
