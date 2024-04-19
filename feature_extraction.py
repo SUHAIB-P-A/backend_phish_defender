@@ -11,6 +11,7 @@ from favicon import get
 from datetime import datetime
 from datetime import date
 from tldextract import extract
+from urllib.parse import urljoin, urlparse
 from const import constant
 
 # instance for constant class
@@ -366,7 +367,43 @@ def links_in_tags(url, domain, soup):
 
 
 def sfh(url):
-    print("hello")
+ try:
+    response = requests.get(url)
+    #print(response)
+    soup = BeautifulSoup(response.text, "lxml")
+    #print(soup)
+
+    # Check for multiple forms and handle relative URLs
+    for form in soup.find_all('form'):
+      action = form.get('action')
+      #print(action)
+      if action:
+        # Handle relative URLs based on the original URL
+        full_action = urljoin(url, action)
+        #print(full_action)
+        parsed_url = urlparse(full_action)
+        #print(parsed_url)
+        form_domain = parsed_url.netloc.lower()  # Extract and lowercase domain
+        #print(form_domain)
+
+        # Check for empty or "about:blank" action
+        if not full_action or full_action.lower() == "about:blank":
+          return -1
+
+        # Check domain match (heuristic)
+        if urlparse(url).netloc.lower() in form_domain:  # Subdomain match
+          #print("helo")
+          return 1
+        else:
+          return 0  # Different domain
+
+    # No form found
+    return -1
+
+ except requests.exceptions.RequestException as e:
+    print(f"Error getting URL info: {e}")
+    return -1
+
 
 
 def check_submit_to_email(response):
@@ -449,13 +486,13 @@ def generate_dataset(url):
 # get all the domain information about the url
     try:
         whois_respo = whois.whois(url)
-        print(whois_respo)
+        #print(whois_respo)
         domain = whois_respo.domain_name
-        print(domain)
+        #print(domain)
         list_ckeck = isinstance(domain, list)
         if (list_ckeck == True):
             domain = domain[1].lower()
-            print(domain)
+            #print(domain)
     except:
         whois_respo = ""
         domain = ""
