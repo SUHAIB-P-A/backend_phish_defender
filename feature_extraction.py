@@ -301,13 +301,13 @@ def url_of_anchor(url, domain, soup):
                 # there in the actual a['href']
                 if "#" in a['href'] or "javascript" in a['href'].lower() or "mailto" in a['href'].lower() or not (url in a['href'] or domain in a['href']):
                     unsafe = unsafe + 1
-                    print(unsafe)
+                    # print(unsafe)
                 i = i + 1
-                print(i)
+                # print(i)
 
             try:
                 percentage = unsafe / float(i) * 100
-                print("URL of Anchor percentage = ", percentage)
+                # print("URL of Anchor percentage = ", percentage)
 
                 if percentage < 31.0:
                     return 1
@@ -326,7 +326,43 @@ def url_of_anchor(url, domain, soup):
 
 
 def links_in_tags(url, domain, soup):
-    print("hello")
+    i = 0
+    success = 0
+    try:
+
+        if soup == -999:
+            return -1
+
+        else:
+            for link in soup.find_all('link', href=True):
+                dots = [x.start(0) for x in re.finditer('\.', link['href'])]
+                if url in link['href'] or domain in link['href'] or len(dots) == 1:
+                    success = success + 1
+                i = i+1
+
+            for script in soup.find_all('script', src=True):
+                dots = [x.start(0) for x in re.finditer('\.', script['src'])]
+                if url in script['src'] or domain in script['src'] or len(dots) == 1:
+                    success = success + 1
+                i = i+1
+            try:
+                percentage = success / float(i) * 100
+                print("Links in tags percentage = ", percentage)
+
+                if percentage < 17.0:
+                    return 1
+
+                elif ((percentage >= 17.0) and (percentage <= 81.0)):
+                    return 0
+
+                else:
+                    return -1
+
+            except:
+                return 1
+
+    except:
+        return -1
 
 
 def sfh(url):
