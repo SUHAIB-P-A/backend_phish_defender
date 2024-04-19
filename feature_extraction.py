@@ -294,7 +294,6 @@ def url_of_anchor(url, domain, soup):
 
         if soup == -999:
             return -1
-            # data['URL_of_Anchor']=-1
 
         else:
             for a in soup.find_all('a', href=True):
@@ -312,16 +311,16 @@ def url_of_anchor(url, domain, soup):
 
                 if percentage < 31.0:
                     return 1
-                    # data['URL_of_Anchor']=1
+
                 elif ((percentage >= 31.0) and (percentage <= 67.0)):
                     return 0
-                    # data['URL_of_Anchor']=0
+
                 else:
                     return -1
-                    # data['URL_of_Anchor']=-1
+
             except:
                 return 1
-                # data['URL_of_Anchor']=1
+
     except:
         return -1
 
