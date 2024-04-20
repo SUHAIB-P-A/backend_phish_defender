@@ -406,8 +406,39 @@ def sfh(url):
 
 
 
-def check_submit_to_email(response):
-    print("hello")
+def check_submit_to_email(url,response):
+  try:
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "lxml")
+
+    # Look for form action containing "mailto"
+    for form in soup.find_all('form'):
+      action = form.get('action')
+      print(action)
+      if action and action.lower().startswith("mailto:"):
+        print("hello")
+        return 1
+
+    # Look for presence of email input fields or elements named "email"
+    for form in soup.find_all('form'):
+      for element in form.find_all(['input', 'textarea']):
+        if element.get('type') == 'email' or element.get('name') == 'email':
+          print(element.get('type') == 'email')
+          print(element.get('name') == 'email')
+          return 1
+
+    # Look for specific keywords (less reliable)
+    if any(keyword in response.text.lower() for keyword in ["mail", "email", "contact", "inquiry"]):
+      # print(response.text.lower())
+      print(keyword in response.text.lower()
+            for keyword in ["mail", "email", "contact", "inquiry"])
+      return 1
+
+    return -1
+
+  except requests.exceptions.RequestException as e:
+    print(f"Error getting URL info: {e}")
+    return -1
 
 
 def abnormal_url(url):
@@ -476,6 +507,7 @@ def generate_dataset(url):
 # get and store the response of the inputed url
     try:
         response = requests.get(url)
+        print(response)
         soup = BeautifulSoup(response.text, 'html.parser')
         # print(soup)
     except:
@@ -516,7 +548,7 @@ def generate_dataset(url):
     dataset[13] = url_of_anchor(url, domain, soup)
     dataset[14] = links_in_tags(url, domain, soup)
     dataset[15] = sfh(url)
-    dataset[16] = check_submit_to_email(response)
+    dataset[16] = check_submit_to_email(url,response)
     dataset[17] = abnormal_url(url)
     dataset[18] = web_forwarding(response)
     dataset[19] = on_mouseover(response)
