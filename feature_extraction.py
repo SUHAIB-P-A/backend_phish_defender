@@ -442,7 +442,44 @@ def check_submit_to_email(url,response):
 
 
 def abnormal_url(url):
-    print("hello")
+    index = url.find("://")
+    split_url = url[index + 3:]
+
+    index = split_url.find("/")
+    if index != -1:
+        split_url = split_url[:index]
+
+    if re.match(r"^www.", split_url):
+        split_url = split_url.replace("www.", "")
+
+    split_url = split_url.lower()
+
+    try:
+        whois_response = whois.whois(url)
+        d = whois_response.domain_name
+
+        if d == "" or d is None:
+            return -1  # Hostname not found in WHOIS data
+
+        list_check = isinstance(d, list)
+
+        if list_check:
+            d = d[1].lower()
+            if d == split_url:
+                return 1
+            else:
+                return -1
+
+        else:
+            d = d.lower()
+            if d == split_url:
+                return 1
+            else:
+                return -1
+
+    except Exception as e:
+        print("Error:", e)
+        return -1
 
 
 def web_forwarding(response):
