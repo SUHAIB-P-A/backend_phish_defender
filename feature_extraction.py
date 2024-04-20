@@ -367,78 +367,77 @@ def links_in_tags(url, domain, soup):
 
 
 def sfh(url):
- try:
-    response = requests.get(url)
-    #print(response)
-    soup = BeautifulSoup(response.text, "lxml")
-    #print(soup)
+    try:
+        response = requests.get(url)
+        # print(response)
+        soup = BeautifulSoup(response.text, "lxml")
+        # print(soup)
 
-    # Check for multiple forms and handle relative URLs
-    for form in soup.find_all('form'):
-      action = form.get('action')
-      #print(action)
-      if action:
-        # Handle relative URLs based on the original URL
-        full_action = urljoin(url, action)
-        #print(full_action)
-        parsed_url = urlparse(full_action)
-        #print(parsed_url)
-        form_domain = parsed_url.netloc.lower()  # Extract and lowercase domain
-        #print(form_domain)
+        # Check for multiple forms and handle relative URLs
+        for form in soup.find_all('form'):
+            action = form.get('action')
+            # print(action)
+            if action:
+                # Handle relative URLs based on the original URL
+                full_action = urljoin(url, action)
+                # print(full_action)
+                parsed_url = urlparse(full_action)
+                # print(parsed_url)
+                form_domain = parsed_url.netloc.lower()  # Extract and lowercase domain
+                # print(form_domain)
 
-        # Check for empty or "about:blank" action
-        if not full_action or full_action.lower() == "about:blank":
-          return -1
+                # Check for empty or "about:blank" action
+                if not full_action or full_action.lower() == "about:blank":
+                    return -1
 
-        # Check domain match (heuristic)
-        if urlparse(url).netloc.lower() in form_domain:  # Subdomain match
-          #print("helo")
-          return 1
-        else:
-          return 0  # Different domain
+                # Check domain match (heuristic)
+                if urlparse(url).netloc.lower() in form_domain:  # Subdomain match
+                    # print("helo")
+                    return 1
+                else:
+                    return 0  # Different domain
 
-    # No form found
-    return -1
+        # No form found
+        return -1
 
- except requests.exceptions.RequestException as e:
-    print(f"Error getting URL info: {e}")
-    return -1
+    except requests.exceptions.RequestException as e:
+        print(f"Error getting URL info: {e}")
+        return -1
 
 
+def check_submit_to_email(url, response):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, "lxml")
 
-def check_submit_to_email(url,response):
-  try:
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, "lxml")
+        # Look for form action containing "mailto"
+        for form in soup.find_all('form'):
+            action = form.get('action')
+            print(action)
+            if action and action.lower().startswith("mailto:"):
+                print("hello")
+                return 1
 
-    # Look for form action containing "mailto"
-    for form in soup.find_all('form'):
-      action = form.get('action')
-      print(action)
-      if action and action.lower().startswith("mailto:"):
-        print("hello")
-        return 1
+        # Look for presence of email input fields or elements named "email"
+        for form in soup.find_all('form'):
+            for element in form.find_all(['input', 'textarea']):
+                if element.get('type') == 'email' or element.get('name') == 'email':
+                    print(element.get('type') == 'email')
+                    print(element.get('name') == 'email')
+                    return 1
 
-    # Look for presence of email input fields or elements named "email"
-    for form in soup.find_all('form'):
-      for element in form.find_all(['input', 'textarea']):
-        if element.get('type') == 'email' or element.get('name') == 'email':
-          print(element.get('type') == 'email')
-          print(element.get('name') == 'email')
-          return 1
+        # Look for specific keywords (less reliable)
+        if any(keyword in response.text.lower() for keyword in ["mail", "email", "contact", "inquiry"]):
+            # print(response.text.lower())
+            # print(keyword in response.text.lower()
 
-    # Look for specific keywords (less reliable)
-    if any(keyword in response.text.lower() for keyword in ["mail", "email", "contact", "inquiry"]):
-      # print(response.text.lower())
-      print(keyword in response.text.lower()
-            for keyword in ["mail", "email", "contact", "inquiry"])
-      return 1
+            return 1
 
-    return -1
+        return -1
 
-  except requests.exceptions.RequestException as e:
-    print(f"Error getting URL info: {e}")
-    return -1
+    except requests.exceptions.RequestException as e:
+        print(f"Error getting URL info: {e}")
+        return -1
 
 
 def abnormal_url(url):
@@ -482,8 +481,35 @@ def abnormal_url(url):
         return -1
 
 
-def web_forwarding(response):
-    print("hello")
+def web_forwarding(url, response):
+    try:
+        response = requests.get(url, allow_redirects=True)  # Allow redirects
+        response.raise_for_status()  # Raise an exception for non-2xx status codes
+
+        # Extract domain names from original and final URLs
+        original_parsed = urlparse(url)
+        original_domain = original_parsed.netloc.lower()
+        final_parsed = urlparse(response.url)
+        # print(final_parsed)
+        netloc_without_www = final_parsed.netloc[4:]
+        final_domain = netloc_without_www.lower()
+
+        # Check if final URL matches original URL
+        if response.url == url:
+            return 1  # No redirection occurred
+
+        # Check if final URL has the same domain (ignoring subdomains)
+        if original_domain == final_domain:
+            # print(original_domain)
+            # print(final_domain)
+            return 1  # Redirection within the same domain
+        else:
+
+            return -1  # Redirection to a different domain
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error checking redirect for {url}: {e}")
+        return -1
 
 
 def on_mouseover(response):
@@ -555,13 +581,13 @@ def generate_dataset(url):
 # get all the domain information about the url
     try:
         whois_respo = whois.whois(url)
-        #print(whois_respo)
+        # print(whois_respo)
         domain = whois_respo.domain_name
-        #print(domain)
+        # print(domain)
         list_ckeck = isinstance(domain, list)
         if (list_ckeck == True):
             domain = domain[1].lower()
-            #print(domain)
+            # print(domain)
     except:
         whois_respo = ""
         domain = ""
@@ -585,9 +611,9 @@ def generate_dataset(url):
     dataset[13] = url_of_anchor(url, domain, soup)
     dataset[14] = links_in_tags(url, domain, soup)
     dataset[15] = sfh(url)
-    dataset[16] = check_submit_to_email(url,response)
+    dataset[16] = check_submit_to_email(url, response)
     dataset[17] = abnormal_url(url)
-    dataset[18] = web_forwarding(response)
+    dataset[18] = web_forwarding(url, response)
     dataset[19] = on_mouseover(response)
     dataset[20] = right_click(response)
     dataset[21] = popup_window(response)
