@@ -477,7 +477,7 @@ def abnormal_url(url):
                 return -1
 
     except Exception as e:
-        print("Error:", e)
+        # print("Error:", e)
         return -1
 
 
@@ -512,20 +512,91 @@ def web_forwarding(url, response):
         return -1
 
 
-def on_mouseover(response):
-    print("hello")
+def on_mouseover(soup):
+    try:
+
+        # print(soup)
+
+        # Find all elements with the 'onmouseover' attribute
+        elements = soup.find_all(attrs={'onmouseover': True})
+
+        # True if at least one element has onmouseover
+        if len(elements) > 0:
+            return -1
+        else:
+            return 1
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching url: {e}")
+        return -1
 
 
-def right_click(response):
-    print("hello")
+def right_click(soup):
+    try:
+
+        # Look for event handlers that prevent default right-click behavior
+        # (replace with more comprehensive checks)
+        blocking_scripts = soup.find_all(
+            "script", text=lambda x: x and "oncontextmenu" in x and "return false" in x
+        )
+
+        # True if at least one script is found
+        if len(blocking_scripts) > 0:
+            return -1
+        else:
+            return 1
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching url: {e}")
+        return -1
 
 
-def popup_window(response):
-    print("hello")
+def popup_window(soup):
+    try:
+
+        # Look for common pop-up indicators (replace with more comprehensive checks):
+        # - Specific tags and attributes (e.g., links with '#', popup classes)
+        # - Known JavaScript libraries or functions associated with pop-ups
+        potential_indicators = [
+            # Example: Link triggering a pop-up
+            soup.find_all("a", href="#", class_="popup-trigger"),
+            # Example: Script for pop-up
+            soup.find_all("script", src=lambda x: x and "pop_up.js" in x),
+            # Add more checks as needed
+        ]
+
+        # Check if any indicators are found
+        for indicator in potential_indicators:
+            if indicator:
+                return -1
+
+        # If no specific indicators are found, consider using a regular expression
+        # for a broader (but less reliable) check (optional):
+        # alert_usage = re.findall(r"alert\(", response.text)
+        # if alert_usage:
+        #     return True
+
+            else:
+                return 1  # No clear indicators found
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching or analyzing website code: {e}")
+        return -1
 
 
-def iframe(response):
-    print("hello")
+def iframe(soup):
+    try:
+
+        # Look for all iframe tags
+        iframes = soup.find_all("iframe")
+        # True if at least one iframe is found
+        if len(iframes) > 0:
+            return -1
+        else:
+            return 1
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching or analyzing website code: {e}")
+        return -1
 
 
 def age_of_domain(whois_response):
@@ -614,10 +685,10 @@ def generate_dataset(url):
     dataset[16] = check_submit_to_email(url, response)
     dataset[17] = abnormal_url(url)
     dataset[18] = web_forwarding(url, response)
-    dataset[19] = on_mouseover(response)
-    dataset[20] = right_click(response)
-    dataset[21] = popup_window(response)
-    dataset[22] = iframe(response)
+    dataset[19] = on_mouseover(soup)
+    dataset[20] = right_click(soup)
+    dataset[21] = popup_window(soup)
+    dataset[22] = iframe(soup)
     dataset[23] = age_of_domain(whois_respo)
     dataset[24] = check_dns_record(url)
     dataset[25] = website_traffic(url)
