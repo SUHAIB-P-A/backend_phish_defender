@@ -7,8 +7,9 @@ import string
 import datetime
 import tldextract
 import favicon
+from pytz import utc
 from favicon import get
-from datetime import datetime
+from datetime import datetime, timezone
 from datetime import date
 from tldextract import extract
 from urllib.parse import urljoin, urlparse
@@ -600,7 +601,38 @@ def iframe(soup):
 
 
 def age_of_domain(whois_response):
-    print("hello")
+    try:
+        # Check for missing creation or expiration date
+        if not whois_response.creation_date or not whois_response.expiration_date:
+            return -1
+
+        # Extract creation and expiration dates, handling potential lists
+        creation_date = min(whois_response.creation_date) if isinstance(
+            whois_response.creation_date, list) else whois_response.creation_date
+        expiration_date = min(whois_response.expiration_date) if isinstance(
+            whois_response.expiration_date, list) else whois_response.expiration_date
+
+        # Convert to datetime objects if necessary
+        if not creation_date.tzinfo:
+            creation_date = creation_date.replace(tzinfo=utc)
+
+        if not expiration_date.tzinfo:
+            expiration_date = expiration_date.replace(tzinfo=utc)
+
+        # Calculate approximate age in months (assuming 30 days per month)
+        today = datetime.now(timezone.utc)
+        age_in_days = abs((expiration_date - creation_date).days)
+        age_in_months = int(age_in_days / 30)
+
+        # Determine active or expired status based on expiration date
+        if age_in_months > 6:
+            return 1
+        else:
+            return -1  # Negative for expired domains
+
+    except Exception as e:
+        print("Age of domain exception:", e)
+        return -1
 
 
 def check_dns_record(url):
