@@ -636,7 +636,36 @@ def age_of_domain(whois_response):
 
 
 def check_dns_record(url):
-    print("hello")
+    try:
+        # Extract domain and suffix using tldextract
+        extracted_parts = extract(url)
+        domain_suffix = f"{extracted_parts.domain}.{extracted_parts.suffix}"
+        #print(domain_suffix)
+
+        # Check for missing domain or suffix
+        if not domain_suffix:
+            #print("Invalid URL format. Unable to check DNS records.")
+            return -1
+
+        # Fetch WHOIS information
+        whois_response = whois.whois(domain_suffix)
+
+        # Check if WHOIS response contains creation_date
+        if not hasattr(whois_response, "creation_date"):
+            #print("WHOIS response lacks creation_date information.")
+            return -1
+
+        # Presence of DNS records indicates a potential website
+        #print(f"DNS records found for: {domain_suffix}")
+        return 1
+
+    except whois.Exception as e:
+        print(f"Error fetching WHOIS information: {e}")
+        return -1
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return -1
 
 
 def website_traffic(url):
