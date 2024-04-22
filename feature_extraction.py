@@ -8,12 +8,14 @@ import datetime
 import tldextract
 import favicon
 import api_keys
+from googlesearch import search
 from pytz import utc
 from favicon import get
 from datetime import datetime, timezone
 from datetime import date
 from tldextract import extract
 from urllib.parse import urljoin, urlparse
+from requests_html import HTMLSession
 from const import constant
 
 # instance for constant class
@@ -641,11 +643,11 @@ def check_dns_record(url):
         # Extract domain and suffix using tldextract
         extracted_parts = extract(url)
         domain_suffix = f"{extracted_parts.domain}.{extracted_parts.suffix}"
-        #print(domain_suffix)
+        # print(domain_suffix)
 
         # Check for missing domain or suffix
         if not domain_suffix:
-            #print("Invalid URL format. Unable to check DNS records.")
+            # print("Invalid URL format. Unable to check DNS records.")
             return -1
 
         # Fetch WHOIS information
@@ -653,11 +655,11 @@ def check_dns_record(url):
 
         # Check if WHOIS response contains creation_date
         if not hasattr(whois_response, "creation_date"):
-            #print("WHOIS response lacks creation_date information.")
+            # print("WHOIS response lacks creation_date information.")
             return -1
 
         # Presence of DNS records indicates a potential website
-        #print(f"DNS records found for: {domain_suffix}")
+        # print(f"DNS records found for: {domain_suffix}")
         return 1
 
     except whois.Exception as e:
@@ -670,9 +672,9 @@ def check_dns_record(url):
 
 
 def website_traffic(url):
-     API_KEY = ""
-     #api_keys.api_key1
-     try:
+    API_KEY = ""
+    # api_keys.api_key1
+    try:
         # Check for API key
         if not API_KEY or not isinstance(API_KEY, str):
             print("Error: Please provide a valid API key as a string.")
@@ -702,26 +704,89 @@ def website_traffic(url):
 
             # Interpret SimilarRank
             if rank < 100000:
-                print("hello001")
+                # print("hello001")
                 return 1  # Likely significant traffic
             else:
                 return 0  # Low SimilarRank
         else:
-            print(
-                f"Error: API request failed with status code {response.status_code}")
+            # print(
+            # f"Error: API request failed with status code {response.status_code}")
             return -1
 
-     except Exception as e:
+    except Exception as e:
         print(f"Unexpected error: {e}")
         raise
 
 
 def page_rank(domain):
-    print("hello")
+    if domain == "" or domain == None:
+        return -1
+
+    else:
+
+        try:
+
+            session = HTMLSession()
+            res = session.get('https://checkpagerank.net/')
+            soup = BeautifulSoup(res.html.html, "html.parser")
+            forms = soup.find_all("form")
+            new_form = forms[1]
+
+            details = {}
+            action = new_form.attrs.get("action").lower()
+            method = new_form.attrs.get("method", "get").lower()
+
+            inputs = []
+            for input_tag in new_form.find_all("input"):
+                # get type of input form control
+                input_type = input_tag.attrs.get("type", "text")
+                # get name attribute
+                input_name = input_tag.attrs.get("name")
+                # get the default value of that input tag
+                input_value = input_tag.attrs.get("value", "")
+                # add everything to that list
+                inputs.append(
+                    {"type": input_type, "name": input_name, "value": input_value})
+
+            # put everything to the resulting dictionary
+            details["action"] = action
+            details["method"] = method
+            details["inputs"] = inputs
+
+            data = {}
+            data[input_tag["name"]] = domain
+
+            load = urljoin('https://checkpagerank.net/', details["action"])
+            res = session.post(load, data=data)
+            page_rank = re.findall(
+                r"Google PageRank: <span style=\"color:#000099;\">([0-9]+)", res.text)
+            # print(global_rank)
+            page_rank = int(page_rank[0])
+            # print("Google PageRank = ",page_rank)
+
+            if page_rank > 2:
+                return 1
+            else:
+                return -1
+
+        except:
+            print("Google Page Rank Exception")
+            return -1
 
 
 def google_index(url):
-    print("hello")
+    try:
+        site = search(url, 5)
+        print("Site = ", site)
+
+        if site:
+            return 1
+
+        else:
+            return -1
+
+    except:
+        return -1
 
 
 def links_pointing_to_page(response):
