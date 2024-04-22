@@ -121,7 +121,7 @@ def having_sub_domain(domain):
     else:
 
         index = domain.rfind(".")
-        print(index)
+        #print(index)
         if index != -1:
             split_url = domain[:index]
             # print(split_url)
@@ -270,7 +270,7 @@ def request_url(url, domain, soup):
             # print(i)
             try:
                 percentage = success/float(i) * 100
-                print("Request URL percentage = ", percentage)
+                #print("Request URL percentage = ", percentage)
 
                 if percentage < 22.0:
                     return 1
@@ -352,7 +352,7 @@ def links_in_tags(url, domain, soup):
                 i = i+1
             try:
                 percentage = success / float(i) * 100
-                print("Links in tags percentage = ", percentage)
+                #print("Links in tags percentage = ", percentage)
 
                 if percentage < 17.0:
                     return 1
@@ -417,17 +417,17 @@ def check_submit_to_email(url, response):
         # Look for form action containing "mailto"
         for form in soup.find_all('form'):
             action = form.get('action')
-            print(action)
+            #print(action)
             if action and action.lower().startswith("mailto:"):
-                print("hello")
+                #print("hello")
                 return 1
 
         # Look for presence of email input fields or elements named "email"
         for form in soup.find_all('form'):
             for element in form.find_all(['input', 'textarea']):
                 if element.get('type') == 'email' or element.get('name') == 'email':
-                    print(element.get('type') == 'email')
-                    print(element.get('name') == 'email')
+                    #print(element.get('type') == 'email')
+                    #print(element.get('name') == 'email')
                     return 1
 
         # Look for specific keywords (less reliable)
@@ -623,7 +623,7 @@ def age_of_domain(whois_response):
             expiration_date = expiration_date.replace(tzinfo=utc)
 
         # Calculate approximate age in months (assuming 30 days per month)
-        today = datetime.now(timezone.utc)
+        #today = datetime.now(timezone.utc)
         age_in_days = abs((expiration_date - creation_date).days)
         age_in_months = int(age_in_days / 30)
 
@@ -777,7 +777,7 @@ def page_rank(domain):
 def google_index(url):
     try:
         site = search(url, 5)
-        print("Site = ", site)
+        #print("Site = ", site)
 
         if site:
             return 1
@@ -811,7 +811,7 @@ def generate_dataset(url):
 # get and store the response of the inputed url
     try:
         response = requests.get(url)
-        print(response)
+        #print(response)
         soup = BeautifulSoup(response.text, 'html.parser')
         # print(soup)
     except:
