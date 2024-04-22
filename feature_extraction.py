@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import whois
 import re
 import time
+import ssl
 import string
 import datetime
 import tldextract
@@ -14,6 +15,7 @@ from pytz import utc
 from favicon import get
 from datetime import datetime, timezone
 from datetime import date
+from subprocess import *
 from tldextract import extract
 from urllib.parse import urljoin, urlparse
 from requests_html import HTMLSession
@@ -141,7 +143,61 @@ def having_sub_domain(domain):
 
 
 def ssl_final_state(url):
-    print("hello")
+    try:
+        # check wheather contains https
+
+        # print(index)
+        if re.match(r"^https?", url):
+            https = 1
+        else:
+            https = 0
+        # print(https)
+
+        # getting the certificate issuer to later compare with trusted issuer
+        # getting host name
+        subDomain, domain, suffix = extract(url)
+        host_name = domain + "." + suffix
+        context = ssl.create_default_context()
+        sct = context.wrap_socket(socket.socket(), server_hostname=host_name)
+        sct.connect((host_name, 443))
+        certificate = sct.getpeercert()
+        # print("certificate : ",certificate)
+        issuer = dict(x[0] for x in certificate['issuer'])
+        certificate_Auth = str(issuer['organizationName'])
+        certificate_Auth = certificate_Auth.split()
+        # print(certificate_Auth)
+
+        if (certificate_Auth[0] == "Network" or certificate_Auth[0] == "Deutsche" or certificate_Auth[0] == "Entrust"):
+            certificate_Auth = certificate_Auth[0] + " " + certificate_Auth[1]
+
+        else:
+            certificate_Auth = certificate_Auth[0]
+
+        trusted_Auth = ['Amazon', 'Comodo', 'Cybertrust', 'Symantec', 'GoDaddy.com,', 'GlobalSign', 'DigiCert', 'StartCom', 'Entrust', 'Verizon', 'Trustwave', 'Unizeto', 'Buypass',
+                        'QuoVadis', 'Deutsche Telekom', 'Network Solutions', 'SwissSign', 'IdenTrust', 'Secom', 'TWCA', 'GeoTrust', 'Thawte',
+                        'Doster', 'VeriSign', 'LinkedIn', 'Let\'s', 'Sectigo', 'RapidSSLonline', 'SSL.com', 'Entrust Datacard', 'Google', 'Facebook']
+
+        # getting age of certificate
+        start_date = str(certificate['notBefore'])
+        end_date = str(certificate['notAfter'])
+        start_year = int(start_date.split()[3])
+        end_year = int(end_date.split()[3])
+        age_of_certificate = end_year-start_year
+        # print(age_of_certificate)
+
+        # checking final conditions
+        if ((https == 1) and (certificate_Auth in trusted_Auth) and (age_of_certificate >= 1)):
+            return 1  # legitimate
+
+        elif ((https == 1) and (certificate_Auth in trusted_Auth)):
+            return 0  # suspicious
+
+        else:
+            return -1  # phishing
+
+    except Exception as e:
+        print("SSL Exception",e)
+        return -1
 
 
 def domain_registration_length(whois_response):
