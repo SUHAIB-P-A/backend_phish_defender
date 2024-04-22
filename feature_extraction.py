@@ -7,6 +7,7 @@ import string
 import datetime
 import tldextract
 import favicon
+import socket
 import api_keys
 from googlesearch import search
 from pytz import utc
@@ -121,7 +122,7 @@ def having_sub_domain(domain):
     else:
 
         index = domain.rfind(".")
-        #print(index)
+        # print(index)
         if index != -1:
             split_url = domain[:index]
             # print(split_url)
@@ -270,7 +271,7 @@ def request_url(url, domain, soup):
             # print(i)
             try:
                 percentage = success/float(i) * 100
-                #print("Request URL percentage = ", percentage)
+                # print("Request URL percentage = ", percentage)
 
                 if percentage < 22.0:
                     return 1
@@ -352,7 +353,7 @@ def links_in_tags(url, domain, soup):
                 i = i+1
             try:
                 percentage = success / float(i) * 100
-                #print("Links in tags percentage = ", percentage)
+                # print("Links in tags percentage = ", percentage)
 
                 if percentage < 17.0:
                     return 1
@@ -417,17 +418,17 @@ def check_submit_to_email(url, response):
         # Look for form action containing "mailto"
         for form in soup.find_all('form'):
             action = form.get('action')
-            #print(action)
+            # print(action)
             if action and action.lower().startswith("mailto:"):
-                #print("hello")
+                # print("hello")
                 return 1
 
         # Look for presence of email input fields or elements named "email"
         for form in soup.find_all('form'):
             for element in form.find_all(['input', 'textarea']):
                 if element.get('type') == 'email' or element.get('name') == 'email':
-                    #print(element.get('type') == 'email')
-                    #print(element.get('name') == 'email')
+                    # print(element.get('type') == 'email')
+                    # print(element.get('name') == 'email')
                     return 1
 
         # Look for specific keywords (less reliable)
@@ -536,18 +537,18 @@ def on_mouseover(soup):
 
 def right_click(soup):
     try:
+        
 
-        # Look for event handlers that prevent default right-click behavior
-        # (replace with more comprehensive checks)
+        # Improved script detection using string attribute
         blocking_scripts = soup.find_all(
-            "script", text=lambda x: x and "oncontextmenu" in x and "return false" in x
+            "script", string=lambda x: x and "oncontextmenu" in x and "return false" in x
         )
 
-        # True if at least one script is found
-        if len(blocking_scripts) > 0:
+        # Check for blocking scripts and return appropriate value
+        if blocking_scripts:
             return -1
         else:
-            return 1
+            return 0
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching url: {e}")
@@ -623,7 +624,7 @@ def age_of_domain(whois_response):
             expiration_date = expiration_date.replace(tzinfo=utc)
 
         # Calculate approximate age in months (assuming 30 days per month)
-        #today = datetime.now(timezone.utc)
+        today = datetime.now(timezone.utc)
         age_in_days = abs((expiration_date - creation_date).days)
         age_in_months = int(age_in_days / 30)
 
@@ -777,7 +778,7 @@ def page_rank(domain):
 def google_index(url):
     try:
         site = search(url, 5)
-        #print("Site = ", site)
+        # print("Site = ", site)
 
         if site:
             return 1
@@ -790,11 +791,49 @@ def google_index(url):
 
 
 def links_pointing_to_page(response):
-    print("hello")
+    if response == "":
+        return -1
+
+    else:
+        number_of_links = len(re.findall(r"<a href=", response.text))
+        if number_of_links == 0:
+            return -1
+
+        elif number_of_links > 0 and number_of_links <= 2:
+            return 0
+
+        else:
+            return 1
 
 
 def statistical_report(domain):
-    print("hello")
+    if domain == "" or domain == None:
+        return -1
+    else:
+
+        url_match = re.search(constant.url_match, domain)
+
+        try:
+            ip_address = socket.gethostbyname(domain)
+            ip_match = re.search('146\.112\.61\.108|213\.174\.157\.151|121\.50\.168\.88|192\.185\.217\.116|78\.46\.211\.158|181\.174\.165\.13|46\.242\.145\.103|121\.50\.168\.40|83\.125\.22\.219|46\.242\.145\.98|'
+                                 '107\.151\.148\.44|107\.151\.148\.107|64\.70\.19\.203|199\.184\.144\.27|107\.151\.148\.108|107\.151\.148\.109|119\.28\.52\.61|54\.83\.43\.69|52\.69\.166\.231|216\.58\.192\.225|'
+                                 '118\.184\.25\.86|67\.208\.74\.71|23\.253\.126\.58|104\.239\.157\.210|175\.126\.123\.219|141\.8\.224\.221|10\.10\.10\.10|43\.229\.108\.32|103\.232\.215\.140|69\.172\.201\.153|'
+                                 '216\.218\.185\.162|54\.225\.104\.146|103\.243\.24\.98|199\.59\.243\.120|31\.170\.160\.61|213\.19\.128\.77|62\.113\.226\.131|208\.100\.26\.234|195\.16\.127\.102|195\.16\.127\.157|'
+                                 '34\.196\.13\.28|103\.224\.212\.222|172\.217\.4\.225|54\.72\.9\.51|192\.64\.147\.141|198\.200\.56\.183|23\.253\.164\.103|52\.48\.191\.26|52\.214\.197\.72|87\.98\.255\.18|209\.99\.17\.27|'
+                                 '216\.38\.62\.18|104\.130\.124\.96|47\.89\.58\.141|78\.46\.211\.158|54\.86\.225\.156|54\.82\.156\.19|37\.157\.192\.102|204\.11\.56\.48|110\.34\.231\.42', ip_address)
+            if url_match:
+                return -1
+                # data['Stastical_Report']=-1
+            elif ip_match:
+                return -1
+                # data['Stastical_Report']=-1
+            else:
+                return 1
+                # data['Stastical_Report']=1
+        except Exception as e:
+            # data['Stastical_Report']=-1
+            print('Connection problem. Please check your internet connection!',e)
+            return -1
 
 
 # Dataset generation function
@@ -811,7 +850,7 @@ def generate_dataset(url):
 # get and store the response of the inputed url
     try:
         response = requests.get(url)
-        #print(response)
+        # print(response)
         soup = BeautifulSoup(response.text, 'html.parser')
         # print(soup)
     except:

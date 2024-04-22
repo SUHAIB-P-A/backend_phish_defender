@@ -9,3 +9,4 @@ class constant:
                          "cur.lv", "ity.im", "q.gs", "po.st", "bc.vc", "twitthis.com", "u.to", "j.mp", "buzurl.com", "cutt.us",
                          "u.bb", "yourls.org", "prettylinkpro.com", "scrnch.me", "filoops.info", "vzturl.com", "qr.net", "1url.com",
                          "tweez.me", "v.gd", "tr.im", "link.zip.net", "replug.io", "rebrandly.com", "bl.ink", 'cutt.ly']
+    url_match = 'at\.ua|usa\.cc|baltazarpresentes\.com\.br|pe\.hu|esy\.es|hol\.es|sweddy\.com|myjino\.ru|96\.lt|ow\.ly'
