@@ -7,6 +7,7 @@ import string
 import datetime
 import tldextract
 import favicon
+import api_keys
 from pytz import utc
 from favicon import get
 from datetime import datetime, timezone
@@ -669,7 +670,50 @@ def check_dns_record(url):
 
 
 def website_traffic(url):
-    print("hello")
+     API_KEY = ""
+     #api_keys.api_key1
+     try:
+        # Check for API key
+        if not API_KEY or not isinstance(API_KEY, str):
+            print("Error: Please provide a valid API key as a string.")
+            return -1
+
+        # Get domain name from WHOIS
+        whois_response = whois.whois(url)
+        domain_name = whois_response.domain_name
+
+        # Handle potential list output and convert to lowercase
+        if isinstance(domain_name, list):
+            domain_name = domain_name[0].lower()
+        else:
+            domain_name = domain_name.lower()
+
+        # Construct API endpoint URL
+        api_endpoint = f'https://api.similarweb.com/v1/similar-rank/{domain_name}/rank?api_key={API_KEY}'
+
+        # Make API request
+        response = requests.get(api_endpoint)
+
+        # Check for successful response
+        if response.status_code == 200:
+            data = response.json()
+            similar_rank_data = data['similar_rank']
+            rank = similar_rank_data['rank']
+
+            # Interpret SimilarRank
+            if rank < 100000:
+                print("hello001")
+                return 1  # Likely significant traffic
+            else:
+                return 0  # Low SimilarRank
+        else:
+            print(
+                f"Error: API request failed with status code {response.status_code}")
+            return -1
+
+     except Exception as e:
+        print(f"Unexpected error: {e}")
+        raise
 
 
 def page_rank(domain):
