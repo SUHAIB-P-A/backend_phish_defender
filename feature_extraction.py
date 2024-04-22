@@ -537,7 +537,6 @@ def on_mouseover(soup):
 
 def right_click(soup):
     try:
-        
 
         # Improved script detection using string attribute
         blocking_scripts = soup.find_all(
@@ -823,16 +822,16 @@ def statistical_report(domain):
                                  '216\.38\.62\.18|104\.130\.124\.96|47\.89\.58\.141|78\.46\.211\.158|54\.86\.225\.156|54\.82\.156\.19|37\.157\.192\.102|204\.11\.56\.48|110\.34\.231\.42', ip_address)
             if url_match:
                 return -1
-                # data['Stastical_Report']=-1
+
             elif ip_match:
                 return -1
-                # data['Stastical_Report']=-1
+
             else:
                 return 1
-                # data['Stastical_Report']=1
+
         except Exception as e:
             # data['Stastical_Report']=-1
-            print('Connection problem. Please check your internet connection!',e)
+            print('Connection problem. Please check your internet connection!', e)
             return -1
 
 
