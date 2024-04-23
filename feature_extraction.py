@@ -886,7 +886,7 @@ def statistical_report(domain):
                 return 1
 
         except Exception as e:
-            # data['Stastical_Report']=-1
+            
             print('Connection problem. Please check your internet connection!', e)
             return -1
 
