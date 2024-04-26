@@ -78,6 +78,6 @@ def gettable(url):
     for i in range(len(l)):
         print(l[i])
 
-
-url = input(str("enter url"))
-gettable(url=url)
+    return l
+#url = input(str("enter url"))
+#gettable(url=url)

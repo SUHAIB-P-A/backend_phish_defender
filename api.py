@@ -2,6 +2,8 @@
 # 1st
 from flask import Flask, request, jsonify, make_response
 from get_result import get_resultfunc
+from get_table import gettable
+from flask import jsonify
 
 # 2ed
 app = Flask(__name__)
@@ -19,6 +21,16 @@ def getphishornot():
     return d
 
 
+@app.route('/details',methods=['GET'])
+
+def getTabledata():
+    tab={}
+    tab.clear()
+    resString = request.args['query']
+    table = gettable(resString)
+    print(table)
+    tab['tableout']=table
+    return jsonify(tab)
 # 3ed
 if __name__ == "__main__":
     app.run(debug=True)
