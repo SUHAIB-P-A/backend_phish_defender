@@ -20,17 +20,20 @@ def getphishornot():
     d['output'] = answer
     return d
 
+# get url details
 
-@app.route('/details',methods=['GET'])
 
+@app.route('/details', methods=['GET'])
 def getTabledata():
-    tab={}
+    tab = {}
     tab.clear()
     resString = request.args['query']
     table = gettable(resString)
     print(table)
-    tab['tableout']=table
+    tab['tableout'] = table
     return jsonify(tab)
+
+
 # 3ed
 if __name__ == "__main__":
     app.run(debug=True)
