@@ -3,7 +3,7 @@
 from flask import Flask, request, jsonify, make_response
 from get_result import get_resultfunc
 from get_table import gettable
-from flask import jsonify
+
 
 # 2ed
 app = Flask(__name__)
