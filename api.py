@@ -10,6 +10,7 @@ app = Flask(__name__)
 
 
 # 4th
+# for prediction
 @app.route('/api', methods=['GET'])
 # 5th
 def getphishornot():
@@ -22,7 +23,7 @@ def getphishornot():
 
 # get url details
 
-
+# for table
 @app.route('/details', methods=['GET'])
 def getTabledata():
     tab = {}
