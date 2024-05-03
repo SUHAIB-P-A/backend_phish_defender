@@ -728,7 +728,7 @@ def check_dns_record(url):
 
 
 def website_traffic(url):
-    API_KEY = api_keys.api_key1
+    API_KEY = api_keys.api_key2
     # api_keys.api_key1
     try:
         # Check for API key

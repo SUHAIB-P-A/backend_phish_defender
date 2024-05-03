@@ -24,6 +24,8 @@ def getphishornot():
 # get url details
 
 # for table
+
+
 @app.route('/details', methods=['GET'])
 def getTabledata():
     tab = {}
@@ -37,4 +39,4 @@ def getTabledata():
 
 # 3ed
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0',port=5000)
