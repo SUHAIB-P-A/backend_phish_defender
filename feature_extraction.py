@@ -196,7 +196,7 @@ def ssl_final_state(url):
             return -1  # phishing
 
     except Exception as e:
-        print("SSL Exception",e)
+        print("SSL Exception", e)
         return -1
 
 
@@ -886,7 +886,7 @@ def statistical_report(domain):
                 return 1
 
         except Exception as e:
-            
+
             print('Connection problem. Please check your internet connection!', e)
             return -1
 
@@ -910,7 +910,7 @@ def generate_dataset(url):
         # print(soup)
     except:
         response = ""
-        soup = BeautifulSoup("","html.parser")
+        soup = BeautifulSoup("", "html.parser")
         # print(soup)
 
 # get all the domain information about the url
@@ -1016,5 +1016,5 @@ def generate_dataset(url):
     return l
 
 
-url = input("enter url : ")
-generate_dataset(url)
+# url = input("enter url : ")
+# generate_dataset(url)
