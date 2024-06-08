@@ -7,7 +7,7 @@ import joblib
 # Load the dataset
 data = pd.read_csv('Dataset Phising Website.csv')
 
-# Remove the first column from the dataset
+# Remove the first column from the dataseta
 data = data.drop('index', axis=1)
 
 # Split the dataset into features (X) and target (Y)
@@ -32,11 +32,14 @@ rf_classifier = RandomForestClassifier(random_state=42)
 # Perform grid search
 grid_search = GridSearchCV(estimator=rf_classifier,
                            param_grid=param_grid, cv=5, scoring='accuracy')
+print(grid_search)
 grid_search.fit(X_train, Y_train)
 
 # Get the best parameters and best estimator
 best_params = grid_search.best_params_
+print(best_params)
 best_rf_classifier = grid_search.best_estimator_
+print(best_rf_classifier)
 
 # Model training with best parameters
 best_rf_classifier.fit(X_train, Y_train)
